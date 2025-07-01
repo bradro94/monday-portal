@@ -1,0 +1,10 @@
+{
+  "name": "monday-portal",
+  "version": "1.0.0",
+  "description": "Monday.com Portal for Trial Environment",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
+  "author": "Brad Rosenfield",
+  "license": "MIT"
+}
