@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monday.com Portal - Trial Environment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4285f4;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4285f4;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        .btn-secondary {
+            background: #34a853;
+        }
+
+        .btn-secondary:hover {
+            background: #2d8f3f;
+            box-shadow: 0 5px 15px rgba(52, 168, 83, 0.3);
+        }
+
+        .environment-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .environment-card:hover {
+            border-color: #4285f4;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .environment-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .environment-description {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            padding: 15px;
+            border-radius: 8px;
+            color: #c33;
+            margin: 15px 0;
+        }
+
+        .user-info {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4285f4;
+        }
+
+        .user-info strong {
+            color: #333;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="https://alcdn.msauth.net/browser/2.38.1/js/msal-browser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">M</div>
+        <h1>Monday.com Portal</h1>
+        <p class="subtitle">Trial Environment - Access Your Workspaces</p>
+        
+        <div id="content">
+            <div class="loading">🔄 Initializing portal...</div>
+        </div>
+        
+        <div class="footer">
+            Trial Environment: trialenablement.onmicrosoft.com
+        </div>
+    </div>
+
+    <script>
+        // MSAL Configuration for your trial environment
+        const msalConfig = {
+            auth: {
+                clientId: "897c79ed-1a8a-4a6a-b809-bbb0ffdbf483", // Your trial environment client ID
+                authority: "https://login.microsoftonline.com/trialenablement.onmicrosoft.com",
+                redirectUri: window.location.origin
+            },
+            cache: {
+                cacheLocation: "sessionStorage",
+                storeAuthStateInCookie: false
+            }
+        };
+
+        // Group ID mappings (you'll need to get these from Azure AD)
+        const groupMappings = {
+            "Monday-testenv1": {
+                name: "Test Environment 1",
+                description: "Development and testing workspace",
+                url: "https://bradssotestenv1.monday.com",
+                groupId: "d88b147b-392e-4ffa-9f86-a820cd8579ab" // Monday-testenv1 group ID
+            },
+            "monday-testenv2": {
+                name: "Test Environment 2", 
+                description: "Secondary testing workspace",
+                url: "https://bradssotestenv2.monday.com",
+                groupId: "4b92f87f-691f-48d1-8f5f-dbfae1853e03" // monday-testenv2 group ID
+            },
+            "monday.com Admin Team": {
+                name: "Admin Access",
+                description: "Administrative access to all environments",
+                isAdmin: true,
+                groupId: "7f39c2b0-9618-45ca-b4ac-cbf1f8e7db3c" // monday.com Admin Team group ID
+            }
+        };
+
+        // Initialize MSAL
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        // Login request
+        const loginRequest = {
+            scopes: ["User.Read", "GroupMember.Read.All"]
+        };
+
+        let currentUser = null;
+        let userGroups = [];
+
+        // Initialize the portal
+        async function initializePortal() {
+            try {
+                // Handle redirect response
+                const response = await msalInstance.handleRedirectPromise();
+                
+                if (response) {
+                    currentUser = response.account;
+                    await loadUserGroups();
+                    showPortalContent();
+                } else {
+                    // Check if user is already logged in
+                    const accounts = msalInstance.getAllAccounts();
+                    if (accounts.length > 0) {
+                        currentUser = accounts[0];
+                        msalInstance.setActiveAccount(currentUser);
+                        await loadUserGroups();
+                        showPortalContent();
+                    } else {
+                        showLoginScreen();
+                    }
+                }
+            } catch (error) {
+                console.error("Initialization error:", error);
+                showError("Failed to initialize portal. Please try again.");
+            }
+        }
+
+        // Show login screen
+        function showLoginScreen() {
+            document.getElementById('content').innerHTML = `
+                <p>Please sign in to access your Monday.com workspaces.</p>
+                <button class="btn" onclick="signIn()">🔐 Sign In with Microsoft</button>
+            `;
+        }
+
+        // Sign in function
+        async function signIn() {
+            try {
+                document.getElementById('content').innerHTML = '<div class="loading">🔄 Signing in...</div>';
+                await msalInstance.loginRedirect(loginRequest);
+            } catch (error) {
+                console.error("Login error:", error);
+                showError("Sign in failed. Please try again.");
+            }
+        }
+
+        // Load user groups
+        async function loadUserGroups() {
+            try {
+                const tokenRequest = {
+                    scopes: ["GroupMember.Read.All"],
+                    account: currentUser
+                };
+
+                const response = await msalInstance.acquireTokenSilent(tokenRequest);
+                
+                // Get user's group memberships
+                const graphResponse = await fetch('https://graph.microsoft.com/v1.0/me/memberOf', {
+                    headers: {
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }
+                });
+
+                const groupData = await graphResponse.json();
+                userGroups = groupData.value || [];
+                
+            } catch (error) {
+                console.error("Error loading groups:", error);
+                showError("Failed to load your group memberships. Please try refreshing the page.");
+            }
+        }
+
+        // Show portal content based on user's groups
+        function showPortalContent() {
+            const userGroupNames = userGroups.map(group => group.displayName);
+            const accessibleEnvironments = [];
+            let isAdmin = false;
+
+            // Check user's group memberships
+            for (const [groupName, config] of Object.entries(groupMappings)) {
+                if (userGroupNames.includes(groupName)) {
+                    if (config.isAdmin) {
+                        isAdmin = true;
+                    } else {
+                        accessibleEnvironments.push({
+                            name: config.name,
+                            description: config.description,
+                            url: config.url
+                        });
+                    }
+                }
+            }
+
+            // If user is admin, show all environments
+            if (isAdmin) {
+                accessibleEnvironments.length = 0; // Clear any existing
+                for (const [groupName, config] of Object.entries(groupMappings)) {
+                    if (!config.isAdmin) {
+                        accessibleEnvironments.push({
+                            name: config.name,
+                            description: config.description,
+                            url: config.url
+                        });
+                    }
+                }
+            }
+
+            let contentHTML = `
+                <div class="user-info">
+                    <strong>Welcome, ${currentUser.name || currentUser.username}</strong><br>
+                    ${currentUser.username}
+                    ${isAdmin ? '<br><span style="color: #34a853;">👑 Administrator Access</span>' : ''}
+                </div>
+            `;
+
+            if (accessibleEnvironments.length === 0) {
+                contentHTML += `
+                    <div class="error">
+                        ❌ You don't have access to any Monday.com environments.<br>
+                        Please contact your IT administrator to request access.
+                    </div>
+                    <button class="btn btn-secondary" onclick="signOut()">Sign Out</button>
+                `;
+            } else if (accessibleEnvironments.length === 1 && !isAdmin) {
+                // Single environment - auto redirect
+                contentHTML += `
+                    <p>Redirecting you to your workspace...</p>
+                    <div class="loading">🔄 Loading ${accessibleEnvironments[0].name}...</div>
+                `;
+                
+                setTimeout(() => {
+                    window.location.href = accessibleEnvironments[0].url;
+                }, 2000);
+            } else {
+                // Multiple environments or admin - show selection
+                contentHTML += `
+                    <p>Choose your Monday.com workspace:</p>
+                `;
+                
+                for (const env of accessibleEnvironments) {
+                    contentHTML += `
+                        <div class="environment-card" onclick="navigateToEnvironment('${env.url}')">
+                            <div class="environment-title">${env.name}</div>
+                            <div class="environment-description">${env.description}</div>
+                        </div>
+                    `;
+                }
+                
+                contentHTML += `
+                    <button class="btn btn-secondary" onclick="signOut()" style="margin-top: 20px;">Sign Out</button>
+                `;
+            }
+
+            document.getElementById('content').innerHTML = contentHTML;
+        }
+
+        // Navigate to environment
+        function navigateToEnvironment(url) {
+            window.location.href = url;
+        }
+
+        // Sign out function
+        async function signOut() {
+            try {
+                await msalInstance.logoutRedirect();
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error">
+                    ${message}
+                </div>
+                <button class="btn" onclick="location.reload()">🔄 Retry</button>
+            `;
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initializePortal);
+    </script>
+</body>
+</html>
