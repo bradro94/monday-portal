@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f6f7fb;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -33,7 +33,7 @@
         .logo {
             width: 60px;
             height: 60px;
-            background: #4285f4;
+            background: #ff3d57;
             border-radius: 10px;
             margin: 0 auto 20px;
             display: flex;
@@ -45,13 +45,13 @@
         }
 
         h1 {
-            color: #333;
+            color: #323338;
             margin-bottom: 10px;
             font-size: 28px;
         }
 
         .subtitle {
-            color: #666;
+            color: #676879;
             margin-bottom: 30px;
             font-size: 16px;
         }
@@ -60,7 +60,7 @@
             display: inline-block;
             padding: 15px 30px;
             margin: 10px;
-            background: #4285f4;
+            background: #6161ff;
             color: white;
             text-decoration: none;
             border-radius: 8px;
@@ -73,18 +73,18 @@
         }
 
         .btn:hover {
-            background: #3367d6;
+            background: #5151e6;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+            box-shadow: 0 5px 15px rgba(97, 97, 255, 0.3);
         }
 
         .btn-secondary {
-            background: #34a853;
+            background: #00d647;
         }
 
         .btn-secondary:hover {
-            background: #2d8f3f;
-            box-shadow: 0 5px 15px rgba(52, 168, 83, 0.3);
+            background: #00c441;
+            box-shadow: 0 5px 15px rgba(0, 214, 71, 0.3);
         }
 
         .environment-card {
@@ -98,25 +98,25 @@
         }
 
         .environment-card:hover {
-            border-color: #4285f4;
-            background: #f0f7ff;
+            border-color: #6161ff;
+            background: #f8f9ff;
             transform: translateY(-2px);
         }
 
         .environment-title {
             font-size: 18px;
             font-weight: 600;
-            color: #333;
+            color: #323338;
             margin-bottom: 5px;
         }
 
         .environment-description {
-            color: #666;
+            color: #676879;
             font-size: 14px;
         }
 
         .loading {
-            color: #666;
+            color: #676879;
             font-size: 16px;
         }
 
@@ -130,15 +130,15 @@
         }
 
         .user-info {
-            background: #f0f7ff;
+            background: #f8f9ff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #4285f4;
+            border-left: 4px solid #6161ff;
         }
 
         .user-info strong {
-            color: #333;
+            color: #323338;
         }
 
         .footer {
@@ -196,25 +196,25 @@
             }
         };
 
-        // Group ID mappings (you'll need to get these from Azure AD)
+        // Group ID mappings
         const groupMappings = {
             "Monday-testenv1": {
                 name: "Test Environment 1",
                 description: "Development and testing workspace",
                 url: "https://bradssotestenv1.monday.com",
-                groupId: "d88b147b-392e-4ffa-9f86-a820cd8579ab" // Monday-testenv1 group ID
+                groupId: "d88b147b-392e-4ffa-9f86-a820cd8579ab"
             },
             "monday-testenv2": {
                 name: "Test Environment 2", 
                 description: "Secondary testing workspace",
                 url: "https://bradssotestenv2.monday.com",
-                groupId: "4b92f87f-691f-48d1-8f5f-dbfae1853e03" // monday-testenv2 group ID
+                groupId: "4b92f87f-691f-48d1-8f5f-dbfae1853e03"
             },
             "monday.com Admin Team": {
                 name: "Admin Access",
                 description: "Administrative access to all environments",
                 isAdmin: true,
-                groupId: "7f39c2b0-9618-45ca-b4ac-cbf1f8e7db3c" // monday.com Admin Team group ID
+                groupId: "7f39c2b0-9618-45ca-b4ac-cbf1f8e7db3c"
             }
         };
 
@@ -261,7 +261,7 @@
         function showLoginScreen() {
             document.getElementById('content').innerHTML = `
                 <p>Please sign in to access your Monday.com workspaces.</p>
-                <button class="btn" onclick="signIn()">🔐 Sign In with Microsoft</button>
+                <button class="btn" onclick="signIn()">🔐 Sign In with Entra ID</button>
             `;
         }
 
@@ -341,7 +341,7 @@
                 <div class="user-info">
                     <strong>Welcome, ${currentUser.name || currentUser.username}</strong><br>
                     ${currentUser.username}
-                    ${isAdmin ? '<br><span style="color: #34a853;">👑 Administrator Access</span>' : ''}
+                    ${isAdmin ? '<br><span style="color: #00d647;">👑 Administrator Access</span>' : ''}
                 </div>
             `;
 
